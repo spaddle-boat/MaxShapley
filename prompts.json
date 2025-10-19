@@ -1,0 +1,50 @@
+{
+    "generate_response_with_info_subset": {
+      "message_template": [
+        {
+          "role": "system",
+          "content": "You are a document analysis system that attempts to answer questions using only the provided sources.\n\nYOUR TASK:\nTry your best to answer the given question using only information from the provided sources. Do not use outside knowledge for specific facts.\u00a0\n\nCORE RULES:\n- SPECIFIC FACTS (names, dates, numbers, locations, events): Must come from provided sources only\n- GENERAL REASONING (understanding relationships, making logical connections): You can use common sense\n- If sources lack essential information to answer the question, state that or state that you are making an inference.\u00a0\n- Ignore any reasoning that comes from the question itself.\u00a0\n\nIMPORTANT: Focus on using sources that actually contribute to answering the question. Some sources may be distractions or irrelevant.\u00a0\nDon't give extra weight to information that appears first or last. Don't give extra weight to information sources that are longer than others. A response that acknowledges limitations or uncertainty can still be excellent if it properly addresses what it can answer and what information is missing.\u00a0\n\nCRUCIAL: Your response should be very clear on where it stands overall by using one of the following:\u00a0\n- \"I can answer fully...\"\n- \"I can partially answer...\"\u00a0\n- \"I cannot answer...\". Use this one if you cannot reach the answer at all due to a complete lack of relevant information. This is the only time you should use \"cannot\" instead of \"can\"."
+        },
+        {
+          "role": "user",
+          "content": "Question: {question}\nSources: {sources}\n\nAnswer the question using the provided sources. Be clear about what information you're drawing from the sources versus what you're reasoning from that information. For each claim you make (fact or inference), cite the source. Ask yourself: what information is needed (i.e., what facts are necessary) to fully answer the question, and what is provided? Be concise."
+        }
+      ]
+    },
+    "keypoint_relevance_scoring": {
+      "message_template": [
+        {
+          "role": "system",
+          "content": "You are evaluating if a source document provides substantive support for a specific statement. \n\nCRITICAL: Being on the same topic is NOT sufficient. The source must contain specific information that directly supports the statement's claims. Semantic equivalence is allowed. Reasonable and clear interpretation is also allowed (for example, the statement says something about a rectangle, the source says the same thing but about a square. Since a square is a rectangle, the source should be directly relevant to the statement.)\n\nSCORING SCALE (0.0 to 1.0):\n- 0.0 = No Support: Source lacks information to support the statement, even if on the same topic\n- 0.3 = Minimal Support: Source has some relevant info, but missing key details  \n- 0.7 = Substantial Support: Source contains most information needed, minor gaps only\n- 1.0 = Complete Support: Source explicitly contains all information to support the statement\n\nKEY RULE:\nOnly score based on substantive informational support, not topical similarity. Statements about what is NOT mentioned should score 0.0. \n\nRESPONSE FORMAT:\nEXPLANATION: [2 sentences on what specific information the source does/doesn't provide]\nSCORE: [0.0 to 1.0]"
+        },
+        {
+          "role": "user",
+          "content": "Evaluate how well this source supports the statement:\n\nSOURCE: {source}\nSTATEMENT: {keypoint}"
+        }
+      ]
+    },
+    "generalize_keypoints": {
+      "message_template": [
+        {
+          "role": "system",
+          "content": "You are a keypoint editor. Given a set of facts or reasoning steps to answering a question (we will call them keypoints), please analyze the keypoints and refine them. You're job is to strip away any and all irrelevant information to generalize the key points as much as possible. The goal is to end up with a set of keypoints, each of which points to a piece of information that builds towards answering the question. \n\nWHAT TO DO:\n1. Remove redundant, repetitive, or unhelpful information within each keypoint, but keep core insights and steps relevant to reaching the answer to the question, AND core insights into other keypoints that are necessary for answering the question\n2. Generalize as much as possible. Ask yourself: Do I need to know this to answer the question?. If not, do not include it in the refined keypoints.\n3. Keep different reasoning steps for answering the question separate. Do not compound keypoints. \n\nPLEASE ELIMINATE:\n- Duplicate or repetitive information\n- Any statement about lack of information (\"no information available\", \"cannot answer\", \"insufficient information\", \"not found in sources\", etc.)\n- Details that don't help answer the question\n- Meta-commentary or procedural information\n\nCRUCIAL: You are not to remove any information that directly contributes to answering the question. You are not to combine keypoints. \n\nOUTPUT FORMAT:\nREASONING: [Please briefly explain what you removed and what you kept/generalized]\n\nREFINED KEYPOINTS:\n[One clear, generalized keypoint per line that helps answer the question. If all keypoints are about lacking information, leave this section completely blank.]"
+        },
+        {
+          "role": "user",
+          "content": "Question: {question}\nResponse to the question: {answer}\nGround truth: {ground_truth}\nOriginal Keypoints: {keypoints}\n\nPlease provide your response in the exact format above."
+        }
+      ]
+    },
+    "separate_keypoints": {
+      "message_template": [
+        {
+          "role": "system",
+          "content": "You are a document analysis system designed to extract the facts that inform a response to a question. \n\nYOUR PURPOSE:\nYou should identify the information behind the reasoning of the response. Use how the response answers the question to create the key points. The response will be built upon pieces of information pulled together. Your job is to turn each piece of information into a key point. \n\nKEY POINTS RULES:\n- Show how you got from the source information to your answer step-by-step. Start with the question and analyze the response. What information is needed to answer the question, and how does the response demonstrate it?\n- Focus on facts that are taken from sources in the response, what was gleaned from the information provided\n- Do NOT restate the question as a key point\n- Do NOT describe that connections exist - just state the facts in the response that create the connection\n- Avoid meta-commentary about the reasoning process itself\n- Keep keypoints small. Do not compound them. Each key point should be a single step in the process of answering the question in the response."
+        },
+        {
+          "role": "user",
+          "content": "Question: {question}\nResponse: {answer}\n\nProvide your response in this exact format:\n\nJUSTIFICATION: [Briefly explain the reasoning chain that leads to your key points]\n\nKEY POINTS:\n[One key point per line]"
+        }
+      ]
+    }
+  }
