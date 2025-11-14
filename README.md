@@ -81,6 +81,3 @@ Each sample contains:
 - `context`: List of (title, sentences) tuples
 - `answer`: Ground truth answer
 - `supporting_facts`: Relevant sources
-
-## License
-
