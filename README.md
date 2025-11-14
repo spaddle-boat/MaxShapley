@@ -82,18 +82,5 @@ Each sample contains:
 - `answer`: Ground truth answer
 - `supporting_facts`: Relevant sources
 
-## Citation
-
-If you use this code, please cite:
-
-```bibtex
-@article{maxshapley2024,
-  title={MAXSHAPLEY: Towards Incentive-compatible LLM-based Search with Fair Context Attribution},
-  author={[Authors]},
-  journal={[Journal]},
-  year={2024}
-}
-```
-
 ## License
 
