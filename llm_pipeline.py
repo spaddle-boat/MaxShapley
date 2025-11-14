@@ -6,15 +6,18 @@ from typing import Dict, List, Any, Union, Tuple, Optional
 from openai import OpenAI
 from anthropic import Anthropic
 import re
+import tiktoken
+
 
 # Constants
 OPENAI_MODEL = "gpt-4.1-nano-2025-04-14"
 ANTHROPIC_MODEL = "claude-3-5-haiku-latest"
 
-PROMPT_FILE = os.path.join(os.path.dirname(__file__), "prompts.json")
+PROMPT_FILE = "prompts.json"
 
 # Centralized per-task output token cap configuration
 LLM_TASK_CONFIG = {
+    "judge1": {"max_tokens": 500},
     "generate_response_with_info_subset": {"max_tokens": 500},
     "keypoint_relevance_scoring": {"max_tokens": 100},
     "generalize_keypoints": {"max_tokens": 500},
@@ -147,7 +150,29 @@ class PromptLoader:
         Returns:
             Parsed response in the appropriate format for the task
         """
-        if task_name == "keypoint_relevance_scoring": 
+        if task_name == "judge1": 
+            try:
+                logging.info(f"Judge Raw Response: {response}")
+
+                # Extract justification and score
+                justification_match = re.search(r"Justification:\s*(.*?)(?:\nScore:|$)", response, re.DOTALL | re.IGNORECASE)
+                score_match = re.search(r"Score:\s*([0-9.]+)", response, re.IGNORECASE)
+                
+                justification = justification_match.group(1).strip() if justification_match else "No justification provided"
+                score = float(score_match.group(1)) if score_match else 0.0
+                
+                return {
+                    'justification': justification,
+                    'score': score
+                }
+            except Exception as e:
+                print(f"Warning: Could not parse score and justification from response: {response}")
+                return {
+                    'justification': "Failed to parse response",
+                    'score': 0.0
+                }
+
+        elif task_name == "keypoint_relevance_scoring": 
             # Check if response indicates no key points
             if "no key points" in response.lower() or "no specific key points" in response.lower():
                 return 0.0, "No key points available"
@@ -216,21 +241,55 @@ class PromptLoader:
         
     def run_task(self, task_name: str, sample: Dict[str, Any], max_tokens: Optional[int] = None) -> Any:
         """Run a task with the given sample data.
-        Args:
-            task_name: Name of the task to run
-            sample: Dictionary containing variables for the prompt
-        Returns:
-            Parsed response in the appropriate format for the task
         """
         messages = self.get_prompt(task_name, sample)
+
+        # Convert messages to a single string for token counting
+        if isinstance(messages, list):
+            prompt_text = "\n".join([msg["content"] for msg in messages if "content" in msg])
+        else:
+            prompt_text = str(messages)
+        input_tokens = count_tokens(prompt_text, self.llm.model)
 
         # Use LLM_TASK_CONFIG for max_tokens if not explicitly provided
         if max_tokens is None:
             from llm_pipeline import LLM_TASK_CONFIG
             max_tokens = LLM_TASK_CONFIG.get(task_name, {}).get("max_tokens", 500)
         response = self.call_llm(messages, max_tokens=max_tokens)
+        output_tokens = count_tokens(response, self.llm.model)
 
-        return self.parse_response(task_name, response)
+        return self.parse_response(task_name, response), input_tokens, output_tokens
+
+def count_tokens(text, model="gpt-3.5-turbo"):
+    if "claude" in model:
+        client = Anthropic( api_key=os.getenv("ANTHROPIC_API_KEY"))
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                response = client.messages.count_tokens(
+                    model=model,
+                    system="",
+                    messages=[{"role": "user", "content": text}]
+                )
+                return response.input_tokens
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"404 error, retrying in {60} seconds...")
+                    continue
+                raise
+    elif "4.1" in model:
+        enc = tiktoken.get_encoding("o200k_base") # fallback since tiktoken does not support 4.1 models
+        tokens = enc.encode(text)
+        token_count = len(tokens) 
+        return token_count
+    elif "5" in model:
+        enc = tiktoken.get_encoding("cl100k_base") # fallback since tiktoken does not support 4.1 models
+        tokens = enc.encode(text)
+        token_count = len(tokens) 
+        return token_count
+        
+    encoding = tiktoken.encoding_for_model(model)
+    return len(encoding.encode(text))
 
 def create_llm_pipeline(provider: str = "anthropic", **kwargs) -> PromptLoader:
     """Create a PromptLoader instance with the specified LLM provider.
