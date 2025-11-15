@@ -24,14 +24,14 @@ from load_data import (
     load_musique_data_sample
 )
 
-from baseline_shapley import (
+from shapley_algorithms.shapley_algos import (
     FullShapley,
     MonteCarloUniform,
     MonteCarloAntithetic,
-    LeaveOneOut
+    LeaveOneOut,
+    MaxShapley
 )
-from max_shapley import MaxShapley
-from kernel_shap import run_kernel_shap
+from shapley_algorithms.kernel_shap import run_kernel_shap
 from llm_pipeline import OPENAI_MODEL, ANTHROPIC_MODEL
 
 def run_experiment(dataset, index, csv_path, llm, samples_u, samples_a, log_dir, timestamp):

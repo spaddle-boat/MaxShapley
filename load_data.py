@@ -18,7 +18,9 @@ anthropic_client = Anthropic(api_key=anthropic_api_key) if anthropic_api_key els
 
 def load_hotpot_data_sample(index = 0, readable = True):
     """Load a specific example from the HotPotQA dev set."""
-    path = "hotpotqa_annotated_subset.json"
+    path = "data/hotpotqa_annotated_subset.json"
+    if not os.path.isfile(path):
+        raise FileNotFoundError(f"hootpotqa_annotated_subset.json not found at {path}.")
     with open(path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     
@@ -43,7 +45,9 @@ def load_hotpot_data_sample(index = 0, readable = True):
 
 def load_msmarco_data_sample(index = 0, readable = True):
     """Load a specific example from the MS MARCO (TREC passages) annotated dataset."""
-    path = "msmarco_annotated_subset.json"
+    path = "data/msmarco_annotated_subset.json"
+    if not os.path.isfile(path):
+        raise FileNotFoundError(f"ms_marco_annotated_subset.json not found at {path}.")
     with open(path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     
@@ -73,9 +77,9 @@ def load_musique_data_sample(index=0, readable=True):
         index: Index of the example to load
         readable: If True, formats output for easy reading. If False, returns raw data.
     """
-    path = "musique_annotated_subset.json"    
+    path = "data/musique_annotated_subset.json"    
     if not os.path.isfile(path):
-        raise FileNotFoundError(f"musique_gold_big.json not found at {path}. Run musique_make_gold_dataset first.")
+        raise FileNotFoundError(f"musique_annotated_subset.json not found at {path}.")
     
     with open(path, 'r', encoding='utf-8') as f:
         data = json.load(f)
