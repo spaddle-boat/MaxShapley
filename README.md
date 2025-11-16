@@ -81,3 +81,14 @@ Each sample contains:
 - `context`: List of (title, sentences) tuples
 - `answer`: Ground truth answer
 - `supporting_facts`: Relevant sources
+
+## Citation
+If you found this code useful for a publication, please consider citing our paper: 
+
+@article{maxshapley,
+    month = {November},
+    publisher = {arXiv},
+    author = {Sara Patel and Mingxun Zhou and Giulia Fanti},
+    title = {MaxShapley: Towards Incentive-compatible Generative Search with Fair Context Attribution},
+    year = 2025
+}
