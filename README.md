@@ -1,6 +1,6 @@
-# MAXSHAPLEY: Information Attribution via Shapley Values
+# MaxShapley: Information Attribution via Shapley Values
 
-Official implementation of MAXSHAPLEY from **[MAXSHAPLEY: Towards Incentive-compatible LLM-based Search with Fair Context Attribution]**.
+Official implementation of MaxShapley from **[MaxShapley: Towards Incentive-compatible Generative Search with Fair Context Attribution]**.
 
 ## Overview
 
