@@ -2,3 +2,4 @@ anthropic==0.71.0
 numpy==2.3.4
 openai==2.5.0
 pandas==2.3.3
+tiktoken==0.12.0
