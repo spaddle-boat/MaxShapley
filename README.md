@@ -85,10 +85,10 @@ Each sample contains:
 ## Citation
 If you found this code useful for a publication, please consider citing our paper: 
 
-@article{maxshapley,
-    month = {November},
-    publisher = {arXiv},
-    author = {Sara Patel and Mingxun Zhou and Giulia Fanti},
-    title = {MaxShapley: Towards Incentive-compatible Generative Search with Fair Context Attribution},
-    year = 2025
+@article{maxshapley,  
+&nbsp;&nbsp;&nbsp;&nbsp;month = {November},  
+&nbsp;&nbsp;&nbsp;&nbsp;publisher = {arXiv},  
+&nbsp;&nbsp;&nbsp;&nbsp;author = {Sara Patel and Mingxun Zhou and Giulia Fanti},  
+&nbsp;&nbsp;&nbsp;&nbsp;title = {MaxShapley: Towards Incentive-compatible Generative Search with Fair Context Attribution},  
+&nbsp;&nbsp;&nbsp;&nbsp;year = 2025  
 }
