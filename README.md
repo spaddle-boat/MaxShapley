@@ -20,7 +20,7 @@ export ANTHROPIC_API_KEY="your-key"
 
 ## Quick Start
 
-Run with defaults (MuSiQue dataset, index 0, OpenAI, all shapley algorithms):
+Run with defaults: MuSiQue dataset, index 0, OpenAI, all baselines (see below)
 ```bash
 python calculate_shapley.py
 ```
@@ -32,11 +32,11 @@ python calculate_shapley.py --dataset hotpot --index 5 --llm anthropic --shapley
 
 ## Methods Implemented
 
-- **BaselineShapley**: Exact Shapley values (evaluates all coalitions)
-- **MaxShapley**: Our novel max-based approach with key point decomposition
-- **MonteCarloUniform**: Monte Carlo approximation with uniform sampling
-- **MonteCarloAntithetic**: Monte Carlo with variance reduction
-- **LeaveOneOut**: Fast approximation using leave-one-out evaluation
+- **MaxShapley**: (Ours) Novel max-based approach with key point decomposition
+- **BaselineShapley**: Exact Shapley values (evaluates all coalitions, computationally expensive)
+- **MonteCarloUniform**: Monte Carlo approximation of BaselineShapley using uniform sampling
+- **MonteCarloAntithetic**: Monte Carlo approximation of BaselineShapley using antithetic sampling for variance reduction
+- **LeaveOneOut**: Approximation of BaselineShapley using leave-one-out evaluation
 - **KernelSHAP**: Linear regression-based approximation (uses MonteCarloUniform logs, so must be run with MonteCarloUniform)
 
 ## Command Line Arguments
