@@ -4,17 +4,7 @@ import os
 import json
 import sys
 import pandas as pd
-from openai import OpenAI
-from anthropic import Anthropic
 from collections import defaultdict
-
-# Load API keys from environment variables
-openai_api_key = os.getenv("OPENAI_API_KEY")
-anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
-
-# Initialize clients
-openai_client = OpenAI(api_key=openai_api_key) if openai_api_key else None
-anthropic_client = Anthropic(api_key=anthropic_api_key) if anthropic_api_key else None
 
 def load_hotpot_data_sample(index = 0, readable = True):
     """Load a specific example from the HotPotQA dev set."""

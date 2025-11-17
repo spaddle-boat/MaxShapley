@@ -8,6 +8,9 @@ from anthropic import Anthropic
 import re
 import tiktoken
 
+# Load API keys from environment variables
+openai_api_key = os.getenv("OPENAI_API_KEY")
+anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
 
 # Constants
 OPENAI_MODEL = "gpt-4.1-nano-2025-04-14"
@@ -34,7 +37,7 @@ class LLMClient:
 
 class OpenAIClient(LLMClient):
     def __init__(self, model=OPENAI_MODEL):
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.client = OpenAI(api_key=openai_api_key) if openai_api_key else None
         self.model = model
         logging.info(f"OpenAI Model: {model}")
 
@@ -48,6 +51,9 @@ class OpenAIClient(LLMClient):
             )
             content = response.choices[0].message.content
             return content
+        if self.client is None:
+            print("LLM API Client not initialized, check API keys.")
+            raise Exception 
 
         response = self.client.chat.completions.create(
             model=self.model,
@@ -59,7 +65,7 @@ class OpenAIClient(LLMClient):
 
 class AnthropicClient(LLMClient):
     def __init__(self, model=ANTHROPIC_MODEL):
-        self.client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        self.client = Anthropic(api_key=anthropic_api_key) if anthropic_api_key else None
         self.model = model
         logging.info(f"Anthropic Model: {model}")
 

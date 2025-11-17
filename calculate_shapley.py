@@ -34,7 +34,7 @@ from shapley_algorithms.shapley_algos import (
 from shapley_algorithms.kernel_shap import run_kernel_shap
 from llm_pipeline import OPENAI_MODEL, ANTHROPIC_MODEL
 
-def run_experiment(dataset, index, csv_path, llm, samples_u, samples_a, log_dir, timestamp):
+def run_experiment(dataset, index, csv_path, llm, samples_u, samples_a, log_dir, timestamp, shapley_methods_to_run):
     # Load data
     example = None
     if dataset == 'hotpot':
@@ -103,136 +103,148 @@ def run_experiment(dataset, index, csv_path, llm, samples_u, samples_a, log_dir,
     new_row['MonteCarloAntithetic_sample_size'] = samples_a
     
     # Run FullShapley
-    baseline_log = os.path.join(log_dir, f"{dataset}_FullShapley_{timestamp}.log")
-    logging.basicConfig(filename=baseline_log, filemode='w', level=logging.INFO, format='%(message)s', force=True)
-    logging.info(dataset_and_index)
-    
-    start_time = time.time()
-    baseline = FullShapley(sources)
-    baseline_values = baseline.compute(
-        question=question,
-        ground_truth=ground_truth,
-        llm=llm
-    )
-    execution_time = time.time() - start_time
-    
-    new_row['FullShapley_execution_time'] = execution_time
-    new_row['FullShapley_input_tokens'] = baseline.input_tokens
-    new_row['FullShapley_output_tokens'] = baseline.output_tokens
-    for i in range(num_sources):
-        new_row[f'FullShapley_shapley_{i}'] = baseline_values[i]
+    if shapley_methods_to_run is None or any("FullShapley" == k for k in shapley_methods_to_run):
+        print("Running FullShapley")
+        baseline_log = os.path.join(log_dir, f"{dataset}_FullShapley_{timestamp}.log")
+        logging.basicConfig(filename=baseline_log, filemode='w', level=logging.INFO, format='%(message)s', force=True)
+        logging.info(dataset_and_index)
+        
+        start_time = time.time()
+        baseline = FullShapley(sources)
+        baseline_values = baseline.compute(
+            question=question,
+            ground_truth=ground_truth,
+            llm=llm
+        )
+        execution_time = time.time() - start_time
+        
+        new_row['FullShapley_execution_time'] = execution_time
+        new_row['FullShapley_input_tokens'] = baseline.input_tokens
+        new_row['FullShapley_output_tokens'] = baseline.output_tokens
+        for i in range(num_sources):
+            new_row[f'FullShapley_shapley_{i}'] = baseline_values[i]
 
-    print(f"FullShapley: {baseline_log}")
+        print(f"FullShapley: {baseline_log}")
     
     # Run MaxShapley
-    maxshapley_log = os.path.join(log_dir, f"{dataset}_MaxShapley_{timestamp}.log")
-    logging.basicConfig(filename=maxshapley_log, filemode='w', level=logging.INFO, format='%(message)s', force=True)
-    logging.info(dataset_and_index)
-    
-    start_time = time.time()
-    maxshap = MaxShapley(sources)
-    max_values = maxshap.compute(
-        question=question,
-        ground_truth=ground_truth,
-        llm=llm
-    )
-    execution_time = time.time() - start_time
-    
-    new_row['MaxShapley_execution_time'] = execution_time
-    new_row['MaxShapley_input_tokens'] = maxshap.input_tokens
-    new_row['MaxShapley_output_tokens'] = maxshap.output_tokens
-    for i in range(num_sources):
-        new_row[f'MaxShapley_shapley_{i}'] = max_values[i]
+    if shapley_methods_to_run is None or any("MaxShapley" == k for k in shapley_methods_to_run):
+        print("Running MaxShapley")
+        maxshapley_log = os.path.join(log_dir, f"{dataset}_MaxShapley_{timestamp}.log")
+        logging.basicConfig(filename=maxshapley_log, filemode='w', level=logging.INFO, format='%(message)s', force=True)
+        logging.info(dataset_and_index)
+        
+        start_time = time.time()
+        maxshap = MaxShapley(sources)
+        max_values = maxshap.compute(
+            question=question,
+            ground_truth=ground_truth,
+            llm=llm
+        )
+        execution_time = time.time() - start_time
+        
+        new_row['MaxShapley_execution_time'] = execution_time
+        new_row['MaxShapley_input_tokens'] = maxshap.input_tokens
+        new_row['MaxShapley_output_tokens'] = maxshap.output_tokens
+        for i in range(num_sources):
+            new_row[f'MaxShapley_shapley_{i}'] = max_values[i]
 
-    print(f"MaxShapley: {maxshapley_log}")
+        print(f"MaxShapley: {maxshapley_log}")
 
     # Run MonteCarloUniform
-    mcu_log = os.path.join(log_dir, f"{dataset}_MonteCarloUniform_{timestamp}.log")
-    logging.basicConfig(filename=mcu_log, filemode='w', level=logging.INFO, format='%(message)s', force=True)
-    logging.info(dataset_and_index)
-    
-    start_time = time.time()
-    mc_uniform = MonteCarloUniform(sources)
-    mcu_values = mc_uniform.compute(
-        question=question,
-        ground_truth=ground_truth,
-        llm=llm,
-        m=samples_u
-    )
-    execution_time = time.time() - start_time
-    
-    new_row['MonteCarloUniform_execution_time'] = execution_time
-    new_row['MonteCarloUniform_input_tokens'] = mc_uniform.input_tokens
-    new_row['MonteCarloUniform_output_tokens'] = mc_uniform.output_tokens
-    for i in range(num_sources):
-        new_row[f'MonteCarloUniform_shapley_{i}'] = mcu_values[i]
+    if shapley_methods_to_run is None or any("MonteCarloUniform" == k for k in shapley_methods_to_run):
+        print("Running MonteCarloUniform")
+        mcu_log = os.path.join(log_dir, f"{dataset}_MonteCarloUniform_{timestamp}.log")
+        logging.basicConfig(filename=mcu_log, filemode='w', level=logging.INFO, format='%(message)s', force=True)
+        logging.info(dataset_and_index)
+        
+        start_time = time.time()
+        mc_uniform = MonteCarloUniform(sources)
+        mcu_values = mc_uniform.compute(
+            question=question,
+            ground_truth=ground_truth,
+            llm=llm,
+            m=samples_u
+        )
+        execution_time = time.time() - start_time
+        
+        new_row['MonteCarloUniform_execution_time'] = execution_time
+        new_row['MonteCarloUniform_input_tokens'] = mc_uniform.input_tokens
+        new_row['MonteCarloUniform_output_tokens'] = mc_uniform.output_tokens
+        for i in range(num_sources):
+            new_row[f'MonteCarloUniform_shapley_{i}'] = mcu_values[i]
 
-    print(f"MonteCarloUniform: {mcu_log}")
-    
+        print(f"MonteCarloUniform: {mcu_log}")
+        
     # Run MonteCarloAntithetic
-    mca_log = os.path.join(log_dir, f"{dataset}_MonteCarloAntithetic_{timestamp}.log")
-    logging.basicConfig(filename=mca_log, filemode='w', level=logging.INFO, format='%(message)s', force=True)
-    logging.info(dataset_and_index)
-    
-    start_time = time.time()
-    mc_antithetic = MonteCarloAntithetic(sources)
-    mca_values = mc_antithetic.compute(
-        question=question,
-        ground_truth=ground_truth,
-        llm=llm,
-        m=samples_a
-    )
-    execution_time = time.time() - start_time
-    
-    new_row['MonteCarloAntithetic_execution_time'] = execution_time
-    new_row['MonteCarloAntithetic_input_tokens'] = mc_antithetic.input_tokens
-    new_row['MonteCarloAntithetic_output_tokens'] = mc_antithetic.output_tokens
-    for i in range(num_sources):
-        new_row[f'MonteCarloAntithetic_shapley_{i}'] = mca_values[i]
+    if shapley_methods_to_run is None or any("MonteCarloAntithetic" == k for k in shapley_methods_to_run):
+        print("Running MonteCarloAntithetic")
+        mca_log = os.path.join(log_dir, f"{dataset}_MonteCarloAntithetic_{timestamp}.log")
+        logging.basicConfig(filename=mca_log, filemode='w', level=logging.INFO, format='%(message)s', force=True)
+        logging.info(dataset_and_index)
+        
+        start_time = time.time()
+        mc_antithetic = MonteCarloAntithetic(sources)
+        mca_values = mc_antithetic.compute(
+            question=question,
+            ground_truth=ground_truth,
+            llm=llm,
+            m=samples_a
+        )
+        execution_time = time.time() - start_time
+        
+        new_row['MonteCarloAntithetic_execution_time'] = execution_time
+        new_row['MonteCarloAntithetic_input_tokens'] = mc_antithetic.input_tokens
+        new_row['MonteCarloAntithetic_output_tokens'] = mc_antithetic.output_tokens
+        for i in range(num_sources):
+            new_row[f'MonteCarloAntithetic_shapley_{i}'] = mca_values[i]
 
-    print(f"MonteCarloAntithetic: {mca_log}")
+        print(f"MonteCarloAntithetic: {mca_log}")
     
     # Run LeaveOneOut
-    loo_log = os.path.join(log_dir, f"{dataset}_LeaveOneOut_{timestamp}.log")
-    logging.basicConfig(filename=loo_log, filemode='w', level=logging.INFO, format='%(message)s', force=True)
-    logging.info(dataset_and_index)
-    
-    start_time = time.time()
-    loo = LeaveOneOut(sources)
-    loo_values = loo.compute(
-        question=question,
-        ground_truth=ground_truth,
-        llm=llm
-    )
-    execution_time = time.time() - start_time
-    
-    new_row['LeaveOneOut_execution_time'] = execution_time
-    new_row['LeaveOneOut_input_tokens'] = loo.input_tokens
-    new_row['LeaveOneOut_output_tokens'] = loo.output_tokens
-    for i in range(num_sources):
-        new_row[f'LeaveOneOut_shapley_{i}'] = loo_values[i]
-    
-    print(f"LeaveOneOut: {loo_log}")
+    if shapley_methods_to_run is None or any("LeaveOneOut" == k for k in shapley_methods_to_run):
+        print("Running LeaveOneOut")
+        loo_log = os.path.join(log_dir, f"{dataset}_LeaveOneOut_{timestamp}.log")
+        logging.basicConfig(filename=loo_log, filemode='w', level=logging.INFO, format='%(message)s', force=True)
+        logging.info(dataset_and_index)
+        
+        start_time = time.time()
+        loo = LeaveOneOut(sources)
+        loo_values = loo.compute(
+            question=question,
+            ground_truth=ground_truth,
+            llm=llm
+        )
+        execution_time = time.time() - start_time
+        
+        new_row['LeaveOneOut_execution_time'] = execution_time
+        new_row['LeaveOneOut_input_tokens'] = loo.input_tokens
+        new_row['LeaveOneOut_output_tokens'] = loo.output_tokens
+        for i in range(num_sources):
+            new_row[f'LeaveOneOut_shapley_{i}'] = loo_values[i]
+        
+        print(f"LeaveOneOut: {loo_log}")
     
     # Write row to CSV
     with open(csv_path, 'a', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=final_headers)
         writer.writerow(new_row)
     
-    # Run KernelSHAP (uses MonteCarloUniform log data)    
-    print("Starting KernelSHAP")
-    try:
-        run_kernel_shap(
-            log_file=mcu_log,  # Use MonteCarloUniform log file
-            source_csv=csv_path,
-            output=csv_path,
-            alpha=0.001,
-            permutations=samples_u
-        )
-        print(f"KernelSHAP finished.")
-    except Exception as e:
-        print(f"KernelSHAP failed: {e}")
-    
+    # Run KernelSHAP (uses MonteCarloUniform log data)   
+ 
+    if shapley_methods_to_run is None or (any("KernelSHAP" == k for k in shapley_methods_to_run) and any("MonteCarloUniform" == k for k in shapley_methods_to_run)):
+        print("Starting KernelSHAP")
+        try:
+            run_kernel_shap(
+                log_file=mcu_log,  # Use MonteCarloUniform log file
+                source_csv=csv_path,
+                output=csv_path,
+                alpha=0.001,
+                permutations=samples_u
+            )
+            print(f"KernelSHAP finished.")
+        except Exception as e:
+            print(f"KernelSHAP failed: {e}")
+        
     print(f"\nResults saved to: {csv_path}")
 
 def main():
@@ -244,6 +256,7 @@ def main():
     parser.add_argument('--csv', type=str, default='results/', help='Path to CSV file or directory (default: results/)')
     parser.add_argument('--samples_u', type=int, default=1, help='Samples for MonteCarloUniform (default: 1)')
     parser.add_argument('--samples_a', type=int, default=1, help='Samples for MonteCarloAntithetic (default: 1)')
+    parser.add_argument('--shapley_methods', nargs='+', type=str, default=None, help='Which Shapley implementations to run (e.g. FullShapley, MaxShapley MonteCarloUniform, MonteCarloAntithetic, KernelSHAP, LeaveOneOut)')
     
     args = parser.parse_args()
     
@@ -267,7 +280,7 @@ def main():
             os.makedirs(csv_dir, exist_ok=True)
 
     for idx in range(args.index + 1):
-        run_experiment(args.dataset, idx, csv_path, args.llm, args.samples_u, args.samples_a, log_dir, timestamp)
+        run_experiment(args.dataset, idx, csv_path, args.llm, args.samples_u, args.samples_a, log_dir, timestamp, args.shapley_methods)
 
 if __name__ == "__main__":
     main()
