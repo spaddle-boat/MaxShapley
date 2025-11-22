@@ -66,7 +66,7 @@ Each shapley algorithm's execution time and shapley values (in a list) averaged 
 
 **CSV file** (`results/` directory):
 Each row corresponds to a single example (index). 
-Shapley values for the six information sources appear in columns named {shapley_method}_shapley_{source_index}, where source_index is an integer from 0 to 5.
+Shapley values for the six information sources appear in columns named {shapley_method}\_shapley\_{source_index}, where source_index is an integer from 0 to 5.
 If a shapley algorithm did not run, the column still exists but the value is blank. 
 
 **Log files** (`logs/` directory):
