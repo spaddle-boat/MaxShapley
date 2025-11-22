@@ -211,10 +211,10 @@ class KernelSHAPCalculator:
             
             # Report coalition constraint if applied
             total_coalitions = len(subsets_and_scores)
-            if self.max_coalitions_per_index and total_coalitions >= self.max_coalitions_per_index:
-                print(f"  Using {self.max_coalitions_per_index} coalitions (limited from {total_coalitions} found)")
-            else:
-                print(f"  Processing {total_coalitions} coalitions")
+            # if self.max_coalitions_per_index and total_coalitions >= self.max_coalitions_per_index:
+            #     # print(f"  Using {self.max_coalitions_per_index} coalitions (limited from {total_coalitions} found)")
+            # else:
+            #     print(f"  Processing {total_coalitions} coalitions")
             
             # Convert to matrix format for regression
             try:
@@ -262,7 +262,7 @@ class KernelSHAPCalculator:
                     'regression_matrix': matrix
                 }
                 
-                print(f"✓ Calculated SHAP values for {dataset} Index {index}")
+                # print(f"✓ Calculated SHAP values for {dataset} Index {index}")
                 
             except Exception as e:
                 print(f"Error processing {dataset} Index {index}: {str(e)}")
@@ -307,7 +307,6 @@ class KernelSHAPCalculator:
         
         return matrix, {v: k for k, v in feature_mapping.items()}  # Reverse mapping for output
     
-
     def export_standard_csv(self, output_path: str, source_csv_path: Optional[str] = None, num = 0):
         """Export results with standard columns from source + new SHAP columns."""
         
@@ -323,13 +322,14 @@ class KernelSHAPCalculator:
             f'KernelSHAP{num}_output_tokens',
             f'KernelSHAP{num}_execution_time' # Needed for metrics.py to detect KernelSHAP
         ]
+        res = []
         
         # Load source data if provided
         source_data = None
         if source_csv_path:
             try:
                 source_data = pd.read_csv(source_csv_path)
-                print(f"Loaded source data from {source_csv_path}")
+                # print(f"Loaded source data from {source_csv_path}")
             except Exception as e:
                 print(f"Warning: Could not load source CSV {source_csv_path}: {e}")
         
@@ -343,8 +343,8 @@ class KernelSHAPCalculator:
         if output_path.exists():
             try:
                 existing_data = pd.read_csv(output_path)
-                print(f"Found existing output file with {len(existing_data)} rows")
-                print(f"Existing columns: {list(existing_data.columns)}")
+                # print(f"Found existing output file with {len(existing_data)} rows")
+                # print(f"Existing columns: {list(existing_data.columns)}")
             except Exception as e:
                 print(f"Warning: Could not load existing output file: {e}")
         
@@ -361,7 +361,7 @@ class KernelSHAPCalculator:
 
                     if len(matches) > 0:
                         source_row = matches.iloc[iloc_idx]
-                        print(source_row)
+                        # print(source_row)
                         for col in STANDARD_COLUMNS:
                             if '_input_tokens' in col:
                                 tmp_tokens = 0
@@ -377,7 +377,7 @@ class KernelSHAPCalculator:
                                 tmp_time = 0
                                 for tmp_idx in range(len(matches)):
                                     tmp_time += matches.iloc[tmp_idx][f'{METHOD}_execution_time']
-                                    print(matches.iloc[tmp_idx][f'{METHOD}_execution_time'])
+                                    # print(matches.iloc[tmp_idx][f'{METHOD}_execution_time'])
                                 row_data[col] = tmp_time / len(matches)
                             else:
                                 row_data[col] = source_row[col] if col in source_row else ''
@@ -400,6 +400,7 @@ class KernelSHAPCalculator:
                             break
                     
                     row_data[f'KernelSHAP{num}_shapley_{source_idx}'] = shap_value
+                    res.append(shap_value)
 
                 # Create row in correct order
                 row = [row_data[header] for header in all_headers]
@@ -417,24 +418,26 @@ class KernelSHAPCalculator:
                     existing_data = existing_data.reset_index(drop=True)
                     new_df = new_df.reset_index(drop=True)
                     combined_df = pd.concat([existing_data, new_df], ignore_index=True)
-                    print(f"Appended {len(new_df)} new rows to {len(existing_data)} existing rows")
+                    # print(f"Appended {len(new_df)} new rows to {len(existing_data)} existing rows")
                 except Exception as e:
                     print(f"Error concatenating DataFrames: {e}")
                     print("Saving new data only...")
                     combined_df = new_df
             else:
-                print(f"Column mismatch!")
-                print(f"Existing: {list(existing_data.columns)}")
-                print(f"New: {list(new_df.columns)}")
-                print("Overwriting with new format...")
+                # print(f"Column mismatch!")
+                # print(f"Existing: {list(existing_data.columns)}")
+                # print(f"New: {list(new_df.columns)}")
+                # print("Overwriting with new format...")
                 combined_df = new_df
         else:
             combined_df = new_df
-            print(f"Created new file with {len(new_df)} rows")
+            # print(f"Created new file with {len(new_df)} rows")
         
         # Save ONCE at the end
         combined_df.to_csv(output_path, index=False)
-        print(f"Results exported to {output_path}")
+        # print(f"Results exported to {output_path}")
+        
+        return res
 
 
     def export_standard_csv(self, output_path: str, source_csv_path: Optional[str] = None, num = 0):
@@ -447,13 +450,14 @@ class KernelSHAPCalculator:
             f'KernelSHAP{num}_output_tokens',
             f'KernelSHAP{num}_execution_time' # Needed for metrics.py to detect KernelSHAP
         ]
+        res = []
         
         # Load source data if provided
         source_data = None
         if source_csv_path:
             try:
                 source_data = pd.read_csv(source_csv_path)
-                print(f"Loaded source data from {source_csv_path}")
+                # print(f"Loaded source data from {source_csv_path}")
             except Exception as e:
                 print(f"Warning: Could not load source CSV {source_csv_path}: {e}")
         
@@ -467,8 +471,8 @@ class KernelSHAPCalculator:
         if output_path.exists():
             try:
                 existing_data = pd.read_csv(output_path)
-                print(f"Found existing output file with {len(existing_data)} rows")
-                print(f"Existing columns: {list(existing_data.columns)}")
+                # print(f"Found existing output file with {len(existing_data)} rows")
+                # print(f"Existing columns: {list(existing_data.columns)}")
             except Exception as e:
                 print(f"Warning: Could not load existing output file: {e}")
         
@@ -521,6 +525,7 @@ class KernelSHAPCalculator:
                             break
                     
                     row_data[f'KernelSHAP{num}_shapley_{source_idx}'] = shap_value
+                    res.append(shap_value)
 
                 
                 # Create row in correct order
@@ -545,7 +550,7 @@ class KernelSHAPCalculator:
                     how='outer'
                 )
 
-                print(f"Added {len([c for c in new_df.columns if c not in existing_data.columns])} new columns to {output_path}")
+                # print(f"Added {len([c for c in new_df.columns if c not in existing_data.columns])} new columns to {output_path}")
 
                 # Reorder columns so new ones come at the end
                 existing_cols = list(existing_data.columns)
@@ -558,11 +563,12 @@ class KernelSHAPCalculator:
                 combined_df = new_df
         else:
             combined_df = new_df
-            print(f"Created new file with {len(new_df)} rows")
+            # print(f"Created new file with {len(new_df)} rows")
         
         # Save ONCE at the end
         combined_df.to_csv(output_path, index=False)
-        print(f"Results exported to {output_path}")
+        # print(f"Results exported to {output_path}")
+        return res
 
 def run_kernel_shap(log_file, source_csv, output, alpha=0.001, permutations=1):
     coalitions = (permutations * 6) + 1
@@ -572,14 +578,14 @@ def run_kernel_shap(log_file, source_csv, output, alpha=0.001, permutations=1):
     METHOD = f'MonteCarloUniform'
 
     # Parse log file
-    print(f"Parsing log file: {log_file}")
-    if coalitions:
-        print(f"Coalition limit: {coalitions} per index")
+    # print(f"Parsing log file: {log_file}")
+    # if coalitions:
+    #     print(f"Coalition limit: {coalitions} per index")
     
     log_parser = LogFileParser(log_file, max_coalitions_per_index=coalitions)
     parsed_entries = log_parser.parse_log_file()
     
-    print(f"Found {len(parsed_entries)} entries to process")
+    # print(f"Found {len(parsed_entries)} entries to process")
     
     # Calculate SHAP values
     calculator = KernelSHAPCalculator(
@@ -591,9 +597,10 @@ def run_kernel_shap(log_file, source_csv, output, alpha=0.001, permutations=1):
     results = calculator.calculate_shap_values(parsed_entries)
         
     # Export results
-    calculator.export_standard_csv(output, source_csv, num=permutations)
+    res = calculator.export_standard_csv(output, source_csv, num=permutations)
     
-    print(f"\nProcessing complete! Results saved to {output}")
+    # print(f"\nProcessing complete! Results saved to {output}")
+    return res
 
 def main():
     """Main execution function."""
@@ -632,7 +639,7 @@ def main():
     log_parser = LogFileParser(log_file, max_coalitions_per_index=coalitions)
     parsed_entries = log_parser.parse_log_file()
     
-    print(f"Found {len(parsed_entries)} entries to process")
+    # print(f"Found {len(parsed_entries)} entries to process")
     
     # Calculate SHAP values
     calculator = KernelSHAPCalculator(

@@ -69,13 +69,15 @@ def load_musique_data_sample(index=0, readable=True):
     """
     path = "data/musique_annotated_subset.json"    
     if not os.path.isfile(path):
-        raise FileNotFoundError(f"musique_annotated_subset.json not found at {path}.")
+        print(f"musique_annotated_subset.json not found at {path}.")
+        raise FileNotFoundError()
     
     with open(path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     
     if index < 0 or index >= len(data):
-        raise IndexError(f"Index {index} out of range (0..{len(data)-1})")
+        print(f"Index {index} out of range (0..{len(data)-1})")
+        raise IndexError()
     
     example = data[index]
     

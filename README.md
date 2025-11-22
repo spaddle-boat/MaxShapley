@@ -46,20 +46,28 @@ python calculate_shapley.py # Will use default parameters
 python calculate_shapley.py --dataset hotpot --shapley_methods FullShapley --index 10 
 ```
 **Options:**
-- `--dataset`: Dataset to use (`hotpot`, `musique`, `msmarco`) [default: `musique`]
+- `--dataset`: Which Shapley implementations to run (e.g. FullShapley, MaxShapley MonteCarloUniform, MonteCarloAntithetic, KernelSHAP, LeaveOneOut) [default: `all`]
+- `--shapley_methods`: Number of samples for MonteCarloAntithetic [default: `16`]
 - `--index`: Data sample index (0-29) [default: `0`]
 - `--llm`: LLM provider (`anthropic`, `openai`) [default: `anthropic`]
 - `--log`: Directory for log files [default: `logs/`]
 - `--csv`: Directory for CSV results [default: `results/`]
-- `--samples_u`: Number of samples for MonteCarloUniform [default: `16`]
-- `--samples_a`: Number of samples for MonteCarloAntithetic [default: `16`]
+- `--rounds`: Number of rounds [default: `3`]
+- `--samples_u`: Number of samples for MonteCarloUniform [default: `1`]
+- `--samples_a`: Number of samples for MonteCarloAntithetic [default: `1`]
 
 ## Output
 
 The script generates:
 
+**Console**
+Each data sample's query, answer, and an indication of which sources are supporting. 
+Each shapley algorithm's execution time and shapley values (in a list) averaged across rounds. 
+
 **CSV file** (`results/` directory):
-- One row per index with Shapley values. 
+Each row corresponds to a single example (index). 
+Shapley values for the six information sources appear in columns named {shapley_method}_shapley_{source_index}, where source_index is an integer from 0 to 5.
+If a shapley algorithm did not run, the column still exists but the value is blank. 
 
 **Log files** (`logs/` directory):
 - Separate log file for each method
