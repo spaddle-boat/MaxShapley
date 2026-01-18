@@ -1,0 +1,166 @@
+{
+  "config": {
+    "samples_per_dataset": 1,
+    "llm": "openrouter",
+    "timestamp": "2026-01-18T12:48:32.660246"
+  },
+  "summary": {
+    "avg_speedup": 2.676608247943147,
+    "avg_token_reduction": 0.47552711901075684,
+    "avg_jaccard_diff": 0.0,
+    "avg_score_correlation": 0.8874751950131236,
+    "avg_original_jaccard": 0.7222222222222222,
+    "avg_batched_jaccard": 0.7222222222222222,
+    "avg_original_time": 35.1890344619751,
+    "avg_batched_time": 12.576777458190918,
+    "avg_original_tokens": 13308.333333333334,
+    "avg_batched_tokens": 5668.333333333333
+  },
+  "results": [
+    {
+      "dataset": "MSMarco",
+      "sample_index": 0,
+      "query_id": 131843,
+      "question": "definition of a sigmet",
+      "ground_truth_sources": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "num_sources": 6,
+      "original": {
+        "time": 66.13546824455261,
+        "input_tokens": 20174,
+        "output_tokens": 3382,
+        "total_tokens": 23556,
+        "jaccard": 0.6666666666666666,
+        "scores": [
+          0.4346153846153846,
+          0.07692307692307693,
+          0.10384615384615384,
+          0.0,
+          0.1923076923076923,
+          0.1923076923076923
+        ]
+      },
+      "batched": {
+        "time": 14.155165672302246,
+        "input_tokens": 5242,
+        "output_tokens": 1059,
+        "total_tokens": 6301,
+        "jaccard": 0.5,
+        "scores": [
+          0.36986301369863017,
+          0.013698630136986302,
+          0.04109589041095891,
+          0.0,
+          0.2876712328767123,
+          0.2876712328767123
+        ]
+      },
+      "improvements": {
+        "speedup": 4.672179031712887,
+        "token_reduction": 0.7325097639667176,
+        "jaccard_diff": -0.16666666666666663,
+        "score_correlation": 0.8832147561182018
+      }
+    },
+    {
+      "dataset": "MuSiQUE",
+      "sample_index": 0,
+      "query_id": 0,
+      "question": "Who is the spouse of the Green performer?",
+      "ground_truth_sources": [
+        0,
+        1
+      ],
+      "num_sources": 6,
+      "original": {
+        "time": 19.54716730117798,
+        "input_tokens": 6792,
+        "output_tokens": 1091,
+        "total_tokens": 7883,
+        "jaccard": 1.0,
+        "scores": [
+          0.5,
+          0.5,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "batched": {
+        "time": 12.457227945327759,
+        "input_tokens": 4375,
+        "output_tokens": 568,
+        "total_tokens": 4943,
+        "jaccard": 0.6666666666666666,
+        "scores": [
+          0.5405405405405405,
+          0.27027027027027023,
+          0.18918918918918917,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "improvements": {
+        "speedup": 1.5691426204101364,
+        "token_reduction": 0.37295445896232404,
+        "jaccard_diff": -0.33333333333333337,
+        "score_correlation": 0.854172341866903
+      }
+    },
+    {
+      "dataset": "HotpotQA",
+      "sample_index": 0,
+      "query_id": "5ac42ae45542997ea680ca18",
+      "question": "What genre of music is Adnan Sami noted for playing on the piano created through a trapezoid-shapped hammered dulcimer?",
+      "ground_truth_sources": [
+        1,
+        5
+      ],
+      "num_sources": 6,
+      "original": {
+        "time": 19.884467840194702,
+        "input_tokens": 7459,
+        "output_tokens": 1027,
+        "total_tokens": 8486,
+        "jaccard": 0.5,
+        "scores": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "batched": {
+        "time": 11.117938756942749,
+        "input_tokens": 5115,
+        "output_tokens": 646,
+        "total_tokens": 5761,
+        "jaccard": 1.0,
+        "scores": [
+          0.058823529411764705,
+          0.676470588235294,
+          0.0,
+          0.0,
+          0.0,
+          0.2647058823529412
+        ]
+      },
+      "improvements": {
+        "speedup": 1.7885030917064166,
+        "token_reduction": 0.32111713410322884,
+        "jaccard_diff": 0.5,
+        "score_correlation": 0.9250384870542658
+      }
+    }
+  ]
+}

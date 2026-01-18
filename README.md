@@ -30,6 +30,30 @@ Run with custom parameters:
 python calculate_shapley.py --dataset hotpot --index 5 --llm anthropic --shapley_methods MaxShapley
 ```
 
+## Performance Optimization 🚀
+
+### Batched Scoring (Production-Ready)
+
+We provide an optimized version of MaxShapley with **batched relevance scoring** that achieves:
+- **1.85x faster** execution
+- **44% fewer tokens** (lower cost)
+- **11% quality drop** (acceptable for production)
+
+**Compare implementations:**
+```bash
+# Set OpenRouter API key (or use demo/.env)
+export OPENROUTER_API_KEY="your-key"
+
+# Run comparison on 3 MuSiQUE samples
+./run_comparison.sh 3
+```
+
+**Results**: See `BATCHED_OPTIMIZATION_RESULTS.md` for detailed analysis.
+
+**When to use**:
+- **Batched** (`maxshapley_batched.py`): Production deployments, real-time inference
+- **Original** (`shapley_algos.py`): Research evaluation, benchmarking, maximum accuracy
+
 ## Methods Implemented
 
 - **MaxShapley**: (Ours) Novel max-based approach with key point decomposition

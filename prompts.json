@@ -23,6 +23,18 @@
         }
       ]
     },
+    "keypoint_relevance_scoring_batched": {
+      "message_template": [
+        {
+          "role": "system",
+          "content": "You are evaluating how well a source document supports multiple statements. For each statement, provide a relevance score from 0.0 to 1.0.\n\nSCORING SCALE (0.0 to 1.0):\n- 0.0 = No Support: Source lacks information to support the statement\n- 0.3 = Minimal Support: Source has some relevant info but missing key details\n- 0.7 = Substantial Support: Source contains most information needed\n- 1.0 = Complete Support: Source explicitly contains all information needed\n\nCRITICAL: Being on the same topic is NOT sufficient. The source must contain specific information that directly supports the statement's claims. Semantic equivalence is allowed.\n\nRESPONSE FORMAT:\nRespond in JSON format with scores for each statement:\n{{\"scores\": [score1, score2, score3, ...]}}\n\nOnly output the JSON, nothing else."
+        },
+        {
+          "role": "user",
+          "content": "Evaluate how well this source supports each of the following statements:\n\nSOURCE:\n{source}\n\nSTATEMENTS:\n{keypoints}\n\nProvide scores in JSON format: {{\"scores\": [score1, score2, ...]}}"
+        }
+      ]
+    },
     "generalize_keypoints": {
       "message_template": [
         {

@@ -1,0 +1,145 @@
+{
+  "config": {
+    "num_samples": 3,
+    "llm": "openrouter",
+    "timestamp": "2026-01-18T12:39:31.102938"
+  },
+  "summary": {
+    "avg_speedup": 1.8512508797168292,
+    "avg_token_reduction": 0.43684298459541054,
+    "avg_jaccard_diff": -0.11111111111111112,
+    "avg_score_correlation": 0.8623086862314334,
+    "avg_original_jaccard": 1.0,
+    "avg_batched_jaccard": 0.8888888888888888,
+    "avg_original_time": 21.71018060048421,
+    "avg_batched_time": 11.674352884292603
+  },
+  "results": [
+    {
+      "index": 0,
+      "question": "Who is the spouse of the Green performer?",
+      "ground_truth_sources": [
+        0,
+        1
+      ],
+      "original": {
+        "time": 20.964484930038452,
+        "input_tokens": 6904,
+        "output_tokens": 1113,
+        "jaccard": 1.0,
+        "scores": [
+          0.5,
+          0.5,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "batched": {
+        "time": 10.866211414337158,
+        "input_tokens": 4197,
+        "output_tokens": 492,
+        "jaccard": 1.0,
+        "scores": [
+          0.5,
+          0.5,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "improvements": {
+        "speedup": 1.9293279074597585,
+        "token_reduction": 0.41511787451665216,
+        "jaccard_diff": 0.0,
+        "score_correlation": 1.0
+      }
+    },
+    {
+      "index": 1,
+      "question": "Who founded the company that distributed the film UHF?",
+      "ground_truth_sources": [
+        0,
+        1
+      ],
+      "original": {
+        "time": 17.22356104850769,
+        "input_tokens": 6518,
+        "output_tokens": 865,
+        "jaccard": 1.0,
+        "scores": [
+          0.7692307692307692,
+          0.23076923076923075,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "batched": {
+        "time": 11.446338891983032,
+        "input_tokens": 4081,
+        "output_tokens": 427,
+        "jaccard": 1.0,
+        "scores": [
+          0.5882352941176471,
+          0.4117647058823529,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "improvements": {
+        "speedup": 1.5047222706791428,
+        "token_reduction": 0.38940809968847356,
+        "jaccard_diff": 0.0,
+        "score_correlation": 0.9322723879863232
+      }
+    },
+    {
+      "index": 2,
+      "question": "What administrative territorial entity is the owner of Ciudad Deportiva located?",
+      "ground_truth_sources": [
+        0,
+        1
+      ],
+      "original": {
+        "time": 26.942495822906494,
+        "input_tokens": 10024,
+        "output_tokens": 1387,
+        "jaccard": 1.0,
+        "scores": [
+          0.6666666666666666,
+          0.3333333333333333,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "batched": {
+        "time": 12.710508346557617,
+        "input_tokens": 4956,
+        "output_tokens": 681,
+        "jaccard": 0.6666666666666666,
+        "scores": [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.0,
+          0.0,
+          0.3333333333333333,
+          0.0
+        ]
+      },
+      "improvements": {
+        "speedup": 2.1197024610115864,
+        "token_reduction": 0.506002979581106,
+        "jaccard_diff": -0.33333333333333337,
+        "score_correlation": 0.654653670707977
+      }
+    }
+  ]
+}

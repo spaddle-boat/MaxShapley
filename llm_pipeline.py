@@ -11,10 +11,13 @@ import tiktoken
 # Load API keys from environment variables
 openai_api_key = os.getenv("OPENAI_API_KEY")
 anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
+openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
 
 # Constants
 OPENAI_MODEL = "gpt-4.1-nano-2025-04-14"
 ANTHROPIC_MODEL = "claude-3-5-haiku-latest"
+OPENROUTER_MODEL = "google/gemini-3-flash-preview"
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 PROMPT_FILE = "prompts.json"
 
@@ -23,6 +26,7 @@ LLM_TASK_CONFIG = {
     "judge1": {"max_tokens": 500},
     "generate_response_with_info_subset": {"max_tokens": 500},
     "keypoint_relevance_scoring": {"max_tokens": 100},
+    "keypoint_relevance_scoring_batched": {"max_tokens": 200},
     "generalize_keypoints": {"max_tokens": 500},
     "separate_keypoints": {"max_tokens": 500},
 }
@@ -107,6 +111,40 @@ class AnthropicClient(LLMClient):
             temperature=0.0
         )
         content = response.content[0].text # type: ignore
+        return content
+
+class OpenRouterClient(LLMClient):
+    """OpenRouter client for accessing various LLMs via OpenRouter API"""
+    def __init__(self, model=OPENROUTER_MODEL, base_url=OPENROUTER_BASE_URL):
+        self.client = OpenAI(
+            api_key=openrouter_api_key,
+            base_url=base_url
+        ) if openrouter_api_key else None
+        self.model = model
+        self.base_url = base_url
+        logging.info(f"OpenRouter Model: {model}")
+    
+    def get_response(self, messages: List[Dict[str, str]], max_tokens: Optional[int] = None) -> str:
+        if max_tokens is None:
+            max_tokens = 500
+        if not self.client:
+            raise ValueError("OPENROUTER_API_KEY not set in environment")
+        
+        logging.info(f"OpenRouter request: model={self.model}, max_tokens={max_tokens}, messages={len(messages)} msgs")
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=messages,
+            max_tokens=max_tokens,
+            temperature=0.0,
+            extra_headers={
+                "HTTP-Referer": "https://maxshapley-demo.local",
+                "X-Title": "MaxShapley Evaluation"
+            }
+        )
+        content = response.choices[0].message.content or ""
+        logging.info(f"OpenRouter response: length={len(content)}, finish_reason={response.choices[0].finish_reason}")
+        if not content:
+            logging.warning(f"Empty response from OpenRouter! Response object: {response}")
         return content
     
 class PromptLoader:
@@ -245,6 +283,13 @@ class PromptLoader:
                 print(f"Warning: Could not parse keypoints and justification from response: {response}")
                 return {'keypoints': [], 'justification': ""}
         
+        elif task_name == "keypoint_relevance_scoring_batched":
+            # Return raw response - it will be parsed in the batched implementation
+            return response
+        
+        # Default: return raw response for any unhandled task
+        return response
+        
     def run_task(self, task_name: str, sample: Dict[str, Any], max_tokens: Optional[int] = None) -> Any:
         """Run a task with the given sample data.
         """
@@ -293,6 +338,11 @@ def count_tokens(text, model="gpt-3.5-turbo"):
         tokens = enc.encode(text)
         token_count = len(tokens) 
         return token_count
+    elif "gemini" in model.lower() or "google/" in model:
+        # Use cl100k_base for Gemini models as approximation
+        enc = tiktoken.get_encoding("cl100k_base")
+        tokens = enc.encode(text)
+        return len(tokens)
         
     encoding = tiktoken.encoding_for_model(model)
     return len(encoding.encode(text))
@@ -300,7 +350,7 @@ def count_tokens(text, model="gpt-3.5-turbo"):
 def create_llm_pipeline(provider: str = "anthropic", **kwargs) -> PromptLoader:
     """Create a PromptLoader instance with the specified LLM provider.
     Args:
-        provider: "openai", "anthropic", or "ollama"
+        provider: "openai", "anthropic", or "openrouter"
         **kwargs: Additional arguments to pass to the LLM client constructor 
     Returns:
         Configured PromptLoader instance
@@ -309,6 +359,8 @@ def create_llm_pipeline(provider: str = "anthropic", **kwargs) -> PromptLoader:
         client = OpenAIClient(**kwargs)
     elif provider == "anthropic":
         client = AnthropicClient(**kwargs)
+    elif provider == "openrouter":
+        client = OpenRouterClient(**kwargs)
     else:
         raise ValueError(f"Unsupported LLM provider: {provider}")
     return PromptLoader(client)

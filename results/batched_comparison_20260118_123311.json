@@ -1,0 +1,61 @@
+{
+  "config": {
+    "num_samples": 1,
+    "llm": "openrouter",
+    "timestamp": "2026-01-18T12:33:11.827450"
+  },
+  "summary": {
+    "avg_speedup": 2.4957598138488875,
+    "avg_token_reduction": 0.5535765310981998,
+    "avg_jaccard_diff": -1.0,
+    "avg_score_correlation": NaN,
+    "avg_original_jaccard": 1.0,
+    "avg_batched_jaccard": 0.0,
+    "avg_original_time": 27.223854541778564,
+    "avg_batched_time": 10.908042669296265
+  },
+  "results": [
+    {
+      "index": 0,
+      "question": "Who is the spouse of the Green performer?",
+      "ground_truth_sources": [
+        0,
+        1
+      ],
+      "original": {
+        "time": 27.223854541778564,
+        "input_tokens": 9113,
+        "output_tokens": 1386,
+        "jaccard": 1.0,
+        "scores": [
+          0.3333333333333333,
+          0.6666666666666666,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "batched": {
+        "time": 10.908042669296265,
+        "input_tokens": 4214,
+        "output_tokens": 473,
+        "jaccard": 0.0,
+        "scores": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "improvements": {
+        "speedup": 2.4957598138488875,
+        "token_reduction": 0.5535765310981998,
+        "jaccard_diff": -1.0,
+        "score_correlation": NaN
+      }
+    }
+  ]
+}
