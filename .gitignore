@@ -1,0 +1,40 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Lock files (generated at runtime)
+*.lock
+
+# Large datasets (download separately)
+data/full_datasets/
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
