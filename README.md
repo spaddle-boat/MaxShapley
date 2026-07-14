@@ -6,7 +6,7 @@ Official implementation of MaxShapley from **[MaxShapley: Towards Incentive-comp
 
 This repository computes Shapley values to fairly attribute the contribution of information sources in multi-source question answering. We implement multiple Shapley value computation methods including our novel **MaxShapley** approach.
 
-**Note:** This repository is currently being updated to reflect the revised paper submission. The annotated dataset has been expanded from 30 to 100 samples (see Appendix E in our paper); updated files will be available shortly. In the meantime, some data files may still reflect the original 30-sample version.
+**Note:** This repository has been updated to reflect the revised paper submission. The annotated dataset has been expanded from 30 to 100 samples (see Appendix E in our paper); updated files are available as [dataset]_expanded json files. 
 
 ## Installation
 

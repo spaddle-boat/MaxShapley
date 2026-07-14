@@ -27,7 +27,7 @@ from shapley_algorithms.maxshapley_batched import MaxShapleyBatched
 
 def load_msmarco_sample(index: int) -> Dict:
     """Load a sample from MSMarco dataset."""
-    with open('data/msmarco_annotated_subset.json', 'r') as f:
+    with open('data/msmarco_annotated_subset_expanded.json', 'r') as f:
         data = json.load(f)
         sample = data[index]
         
@@ -57,7 +57,7 @@ def load_msmarco_sample(index: int) -> Dict:
 
 def load_musique_sample(index: int) -> Dict:
     """Load a sample from MuSiQUE dataset."""
-    with open('data/musique_annotated_subset.json', 'r') as f:
+    with open('data/musique_annotated_subset_expanded.json', 'r') as f:
         data = json.load(f)
         sample = data[index]
     
@@ -87,7 +87,7 @@ def load_musique_sample(index: int) -> Dict:
 
 def load_hotpotqa_sample(index: int) -> Dict:
     """Load a sample from HotpotQA dataset."""
-    with open('data/hotpotqa_annotated_subset.json', 'r') as f:
+    with open('data/hotpotqa_annotated_subset_expanded.json', 'r') as f:
         data = json.load(f)
         sample = data[index]
     
