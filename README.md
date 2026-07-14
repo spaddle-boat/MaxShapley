@@ -72,9 +72,9 @@ python calculate_shapley.py # Will use default parameters
 python calculate_shapley.py --dataset hotpot --shapley_methods FullShapley --index 10 
 ```
 **Options:**
-- `--dataset`: Which Shapley implementations to run (e.g. FullShapley, MaxShapley MonteCarloUniform, MonteCarloAntithetic, KernelSHAP, LeaveOneOut) [default: `all`]
-- `--shapley_methods`: Number of samples for MonteCarloAntithetic [default: `16`]
-- `--index`: Data sample index (0-29) [default: `0`]
+- `--dataset`: Which annotated dataset to use [default: 'MuSiQUE']
+- `--shapley_methods`: Which Shapley implementations to run (e.g. FullShapley, MaxShapley MonteCarloUniform, MonteCarloAntithetic, KernelSHAP, LeaveOneOut) [default: `all`]
+- `--index`: Data sample index (0-99 (HotPotQA, MuSiQUE)/0-95 (MS Marco)) [default: `0`]
 - `--llm`: LLM provider (`anthropic`, `openai`) [default: `anthropic`]
 - `--log`: Directory for log files [default: `logs/`]
 - `--csv`: Directory for CSV results [default: `results/`]
@@ -102,9 +102,9 @@ If a shapley algorithm did not run, the column still exists but the value is bla
 ## Datasets
 
 We release re-annotated subsets of HotPotQA, MuSiQue, and MS-MARCO:
-- `hotpotqa_annotated_subset.json`
-- `musique_annotated_subset.json`
-- `msmarco_annotated_subset.json`
+- `hotpotqa_annotated_subset.json`, 100 data samples
+- `musique_annotated_subset.json`, 100 data samples
+- `msmarco_annotated_subset.json`, 96 data samples
 
 Each contains examples with a query, information sources and their titles, and an indication of which information sources are relevant to answering the query. 
 HotPotQA & MuSiQue: supporting_facts field contains tuples of (title, _) where the title indicates relevant sources

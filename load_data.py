@@ -8,9 +8,9 @@ from collections import defaultdict
 
 def load_hotpot_data_sample(index = 0, readable = True):
     """Load a specific example from the HotPotQA dev set."""
-    path = "data/hotpotqa_annotated_subset.json"
+    path = "data/hotpotqa_annotated_subset_expanded.json"
     if not os.path.isfile(path):
-        raise FileNotFoundError(f"hootpotqa_annotated_subset.json not found at {path}.")
+        raise FileNotFoundError(f"hootpotqa_annotated_subset_expanded.json not found at {path}.")
     with open(path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     
@@ -35,9 +35,9 @@ def load_hotpot_data_sample(index = 0, readable = True):
 
 def load_msmarco_data_sample(index = 0, readable = True):
     """Load a specific example from the MS MARCO (TREC passages) annotated dataset."""
-    path = "data/msmarco_annotated_subset.json"
+    path = "data/msmarco_annotated_subset_expanded.json"
     if not os.path.isfile(path):
-        raise FileNotFoundError(f"ms_marco_annotated_subset.json not found at {path}.")
+        raise FileNotFoundError(f"ms_marco_annotated_subset_expanded.json not found at {path}.")
     with open(path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     
@@ -67,9 +67,9 @@ def load_musique_data_sample(index=0, readable=True):
         index: Index of the example to load
         readable: If True, formats output for easy reading. If False, returns raw data.
     """
-    path = "data/musique_annotated_subset.json"    
+    path = "data/musique_annotated_subset_expanded.json"    
     if not os.path.isfile(path):
-        print(f"musique_annotated_subset.json not found at {path}.")
+        print(f"musique_annotated_subset_expanded.json not found at {path}.")
         raise FileNotFoundError()
     
     with open(path, 'r', encoding='utf-8') as f:
